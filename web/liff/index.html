@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#6B5C45" />
+    <title>ManyFish · 預約外帶</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="/customer-mobile.css" />
+    <link rel="icon" type="image/svg+xml" href="/assets/manyfish-favicon.svg" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/"
+        ><svg
+          class="brand-logo"
+          viewBox="0 0 1230 1279"
+          role="img"
+          aria-label="好多魚 Many Fish LOGO：魚與貓角色"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <image
+            href="/assets/manyfish-logo-transparent.png"
+            width="1230"
+            height="1279"
+            aria-hidden="true"
+          /></svg
+        ><span class="brand-context">現做・預約外帶</span></a
+      ><span id="mode" class="badge">連線中</span>
+    </header>
+    <main class="shell">
+      <section class="hero">
+        <div>
+          <p class="eyebrow">現做的美味，等你來取</p>
+          <h1>把喜歡的口味，<br />留給今天的自己。</h1>
+          <p id="store-description">挑選餐點，預約取餐。到店付款，輕鬆帶走。</p>
+          <p>
+            <a href="https://line.me/R/ti/p/%40787vgbkr" target="_blank" rel="noopener noreferrer">
+              加入 LINE 好友
+            </a>
+          </p>
+        </div>
+        <div class="hero-mark">
+          <svg
+            class="brand-logo"
+            viewBox="0 0 1230 1279"
+            role="img"
+            aria-label="好多魚 Many Fish LOGO：魚與貓角色"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <image
+              href="/assets/manyfish-logo-transparent.png"
+              width="1230"
+              height="1279"
+              aria-hidden="true"
+            />
+          </svg>
+        </div>
+      </section>
+      <nav class="tabs" aria-label="頁面">
+        <button id="menu-tab" class="active" type="button">點餐菜單</button
+        ><button id="orders-tab" type="button">我的訂單</button>
+      </nav>
+      <p id="status" class="notice" role="status" aria-live="polite">
+        正在讀取店家資訊…
+      </p>
+      <section id="auth" class="panel" hidden>
+        <h2>開始點餐</h2>
+        <p id="auth-description"></p>
+        <button id="login" class="primary" type="button">登入</button>
+      </section>
+      <section id="recovery" class="panel recovery" hidden>
+        <h2>確認上一筆訂單</h2>
+        <p id="recovery-status" role="status" aria-live="polite"></p>
+        <button id="lookup" type="button">重新查詢</button
+        ><button id="retry" type="button" hidden>重新送出這筆訂單</button>
+      </section>
+      <div id="menu-view" class="content-grid" hidden>
+        <section class="menu-area" aria-label="餐點菜單">
+          <div class="section-heading">
+            <h2>今天想吃什麼？</h2>
+          </div>
+          <nav id="categories" class="categories" aria-label="餐點分類"></nav>
+          <div id="products" class="products"></div>
+        </section>
+        <aside class="panel checkout">
+          <div class="section-heading">
+            <h2>你的餐點</h2>
+            <span id="basket-count" class="badge">0 份</span>
+          </div>
+          <div id="basket"></div>
+          <div class="total">
+            <span>預估合計</span><strong id="total">NT$ 0</strong>
+          </div>
+          <p class="fineprint">實際金額以訂單確認結果為準。</p>
+          <form id="checkout-form">
+            <label for="pickup-name">取餐姓名（必填）</label
+            ><input
+              id="pickup-name"
+              name="pickupName"
+              required
+              maxlength="80"
+              autocomplete="name"
+              placeholder="方便店員叫號的名字"
+            /><label for="pickup-phone">聯絡電話（必填）</label>
+            <input id="pickup-phone" name="pickupPhone" type="tel" inputmode="tel" required maxlength="32" autocomplete="tel" placeholder="請輸入聯絡電話" />
+            <p class="fineprint">訂購成功後會記住姓名、電話與餐點，方便下次訂購。</p>
+            <p id="memory-note" class="fineprint"></p>
+            <label for="pickup-date"
+              >取餐日期</label
+            ><select id="pickup-date" required>
+              <option value="">請選擇日期</option></select
+            ><label for="pickup-time">取餐時段</label
+            ><select id="pickup-time" required>
+              <option value="">請先選擇日期</option>
+            </select>
+            <p id="slot-note" class="fineprint"></p>
+            <fieldset>
+              <legend>付款方式</legend>
+              <label class="payment"
+                ><input type="radio" name="payment" value="ONSITE" checked />
+                <span>到店付款</span></label
+              >
+            </fieldset>
+            <button id="submit" type="submit" class="primary full" disabled>
+              確認預約並送出
+            </button>
+          </form>
+          <p class="fineprint">
+            請依預約時間到店取餐。
+          </p>
+        </aside>
+      </div>
+      <section id="orders-view" hidden>
+        <div class="section-heading">
+          <h2>我的訂單</h2>
+          <button id="refresh-orders" type="button">更新狀態</button>
+        </div>
+        <p class="muted">取餐前可回到這裡查看最新進度。</p>
+        <div id="orders" class="order-list"></div>
+      </section>
+      <footer>
+        ManyFish 預約外帶 <span>·</span>
+        <a href="https://line.me/R/ti/p/%40787vgbkr" target="_blank" rel="noopener noreferrer">聯絡店家</a>
+      </footer>
+    </main>
+    <dialog id="selection">
+      <form id="selection-form">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">選擇喜歡的口味</p>
+            <h2 id="selection-title"></h2>
+          </div>
+          <button id="close-selection" type="button" aria-label="關閉餐點選擇">
+            ✕
+          </button>
+        </div>
+        <p id="selection-description" class="muted"></p>
+        <div id="variants"></div>
+        <div id="modifiers"></div>
+        <label for="quantity">餐點份數</label
+        ><input
+          id="quantity"
+          type="number"
+          min="1"
+          max="99"
+          value="1"
+          required
+        />
+        <p id="selection-error" class="error" role="alert"></p>
+        <button class="primary full" type="submit">加入餐點</button>
+      </form>
+    </dialog>
+    <script type="module" src="/app.mjs"></script>
+  </body>
+</html>

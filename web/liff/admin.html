@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#6B5C45" />
+    <title>ManyFish · 店家後台</title>
+    <link rel="stylesheet" href="/styles.css" /><link rel="stylesheet" href="/admin.css" />
+    <link rel="icon" type="image/svg+xml" href="/assets/manyfish-favicon.svg" />
+  </head>
+  <body class="admin-app">
+    <header class="site-header">
+      <a class="brand" href="/"
+        ><svg
+          class="brand-logo"
+          viewBox="0 0 1230 1279"
+          role="img"
+          aria-label="好多魚 Many Fish 標誌：魚與貓角色"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <image
+            href="/assets/manyfish-logo-transparent.png"
+            width="1230"
+            height="1279"
+            aria-hidden="true"
+          /></svg
+        ><span class="brand-context">店家後台</span></a
+      ><a href="/">顧客點餐頁 ↗</a>
+    </header>
+    <main class="shell">
+      <div class="admin-heading">
+        <div>
+          <p class="eyebrow">店家營運管理</p>
+          <h1><span>管理每一份</span><span>好滋味。</span></h1>
+          <p class="muted">
+            預約規則更新後適用新訂單，既有預約保留原取餐時間。所有預約單立即送往
+            POS，沒有時段容量限制。
+          </p>
+        </div>
+        <div class="hero-mark">
+          <svg
+            class="brand-logo"
+            viewBox="0 0 1230 1279"
+            role="img"
+            aria-label="好多魚 Many Fish 標誌：魚與貓角色"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <image
+              href="/assets/manyfish-logo-transparent.png"
+              width="1230"
+              height="1279"
+              aria-hidden="true"
+            />
+          </svg>
+        </div>
+      </div>
+      <p id="admin-status" class="notice" role="status" aria-live="polite">
+        請使用個人店家帳號登入。
+      </p>
+      <section class="panel" id="login-panel">
+        <h2>店家登入</h2><form id="admin-login" class="field-grid">
+          <label>帳號<input id="admin-username" autocomplete="username" required /></label>
+          <label>密碼<input id="admin-password" type="password" autocomplete="current-password" required /></label>
+          <button class="primary" type="submit">登入</button>
+        </form><p class="fineprint">帳號由管理員建立；忘記密碼請聯絡管理員重設。</p>
+      </section>
+      <section class="panel" id="account-panel" hidden>
+        <div class="section-heading"><h2 id="signed-in-user"></h2><button id="logout">登出</button></div>
+        <details id="password-details"><summary>變更密碼</summary>
+          <form id="password-form" class="field-grid">
+            <label>目前密碼<input id="current-password" type="password" autocomplete="current-password" required /></label>
+            <label>新密碼<input id="new-password" type="password" autocomplete="new-password" minlength="8" required /></label>
+            <label>再次輸入新密碼<input id="confirm-password" type="password" autocomplete="new-password" minlength="8" required /></label>
+            <button type="submit">儲存新密碼</button>
+          </form>
+        </details>
+      </section>
+      <div id="admin-workspace" hidden>
+        <aside id="admin-sidebar" class="admin-sidebar">
+          <button id="admin-menu-toggle" type="button" aria-expanded="false" aria-controls="admin-navigation">功能選單 <span aria-hidden="true">☰</span></button>
+          <p class="sidebar-label">店家管理</p>
+        <nav id="admin-navigation" class="admin-nav" aria-label="後台導覽"><a href="#reports-section">營運報表</a><a href="#menu-section">菜單與口味</a><a href="#schedule-section">預約設定</a><a href="#orders-section">預約訂單</a><a href="#management-section" data-admin-only>帳號與裝置</a><a href="#imports-section" data-admin-only>歷史資料核對</a></nav>
+          <p class="sidebar-note">好多魚 · 每一份好滋味</p>
+        </aside>
+        <div class="admin-content">
+          <p class="admin-page-label" id="admin-page-label">營運報表</p>
+
+        <section class="panel" id="reports-section" data-admin-page tabindex="-1" hidden>
+          <h2>營運報表</h2><p class="muted">實收依台北收款日期彙整；訂單數依下單日期。缺少收款時間的歷史資料另列待核對。</p>
+          <form id="reports-form" class="field-grid"><label>開始日期<input id="report-from" type="date" required /></label><label>結束日期<input id="report-to" type="date" required /></label><label>來源<select id="report-source"><option value="ALL">全部來源</option><option value="POS">現場 POS</option><option value="LINE_LIFF">LINE 點餐</option><option value="IDOO">IDoo 歷史</option></select></label><button type="submit">查詢報表</button></form>
+          <button id="export-report" type="button" disabled>匯出報表訂單 CSV（不含聯絡資料）</button><p class="fineprint">匯出全部查詢訂單，金額未知保留待核對；原始金額不是實收。</p>
+          <div id="report-result" aria-live="polite"></div>
+        </section>
+        <section class="panel" id="menu-section" data-admin-page tabindex="-1" hidden>
+          <div class="section-heading"><h2>菜單與口味</h2><span id="draft-version" class="badge"></span></div>
+          <p class="muted">修改先存為草稿，預覽差異後發布至 POS 與 LINE。停用保留既有訂單紀錄。</p>
+          <details class="panel" id="availability-panel"><summary>快速售完／恢復販售（已發布菜單）</summary><p class="muted">立即發布販售狀態。若有未發布草稿或本頁尚未儲存的修改，請先處理草稿；系統不會覆蓋草稿。</p><button id="refresh-availability" type="button">更新已發布品項</button><p id="availability-state" role="status"></p><div id="availability-list"></div></details>
+          <div class="button-row"><button id="save-menu">儲存草稿</button><button id="preview-menu">預覽發布差異</button><button id="publish-menu" class="primary">發布已預覽草稿</button><button id="reload-menu">重新讀取草稿</button></div>
+          <p id="menu-state" role="status"></p><div id="menu-diff"></div><div id="catalog-editor"></div>
+        </section>
+        <section class="panel" id="imports-section" data-admin-page tabindex="-1" hidden data-admin-only>
+          <div class="section-heading"><h2>歷史資料核對</h2><button id="refresh-imports" type="button">更新批次摘要</button></div>
+          <p class="muted">原始訂單金額包含尚待核對的付款與取消紀錄，不代表實際收款。歷史資料的付款與退款核對完成前，原始訂單金額不列入實收。</p>
+          <div id="import-batches" aria-live="polite"></div>
+        </section>
+        <section class="panel" id="management-section" data-admin-page tabindex="-1" hidden data-admin-only>
+          <h2>帳號管理</h2><form id="create-user" class="field-grid"><label>新帳號<input id="new-username" autocomplete="off" pattern="[A-Za-z0-9_.\-]{1,64}" title="英文字母、數字、底線、點或連字號，最多 64 個字元" required /></label><label>初始密碼<input id="user-password" type="password" autocomplete="new-password" minlength="8" required /></label><label>角色<select id="user-role"><option value="STAFF">店員</option><option value="ADMIN">管理員</option></select></label><button type="submit">建立帳號</button></form><div id="user-list"></div>
+          <div class="section-heading"><h2>POS 裝置</h2><button id="refresh-devices" type="button">更新裝置回報</button></div><form id="pair-device" class="field-grid"><button type="submit">產生 6 位數配對碼</button></form><p id="pair-result" role="status"></p><div id="device-list"></div>
+        </section>
+        <section id="schedule-section" data-admin-page tabindex="-1" hidden>
+        <div class="section-heading">
+          <h2>預約設定</h2>
+          <span id="schedule-version" class="badge"></span>
+        </div>
+        <div class="admin-grid">
+          <section class="panel">
+            <form id="schedule-form">
+              <div class="field-grid">
+                <label
+                  >可提前天數<input
+                    id="advance-days"
+                    type="number"
+                    min="0"
+                    max="365"
+                    required /></label
+                ><label
+                  >時段間隔（分鐘）<input
+                    id="interval"
+                    type="number"
+                    min="1"
+                    max="1440"
+                    required /></label
+                ><label
+                  >最短提前時間（分鐘）<input
+                    id="lead"
+                    type="number"
+                    min="0"
+                    max="527040"
+                    required /></label
+                ><label
+                  >店家時區<input
+                    id="store-timezone"
+                    required
+                    placeholder="Asia/Taipei"
+                /></label>
+              </div>
+              <h3>每週取餐時段</h3>
+              <p class="fineprint">
+                例如 11:00-14:00,
+                17:00-20:00。空白代表休店；限同日時段，不可重疊。
+              </p>
+              <div id="weekly-windows" class="weekly-windows"></div>
+              <label for="closed-dates">指定休店日期</label
+              ><textarea
+                id="closed-dates"
+                rows="4"
+                placeholder="2026-10-10&#10;2026-10-11"
+              ></textarea>
+              <p class="fineprint">每行輸入一個日期（西元年-月-日，例如 2026-10-10），也可用逗號分隔。</p>
+              <div class="button-row">
+                <button id="save-schedule" class="primary" type="submit">
+                  儲存預約設定</button
+                ><button id="reload-schedule" type="button">
+                  重新讀取設定
+                </button>
+              </div>
+            </form>
+          </section>
+          <aside>
+            <section class="panel">
+              <h2>顧客可選時段</h2>
+              <p class="muted">
+                可先預覽目前填寫設定的實際時段，儲存後才適用新訂單。
+              </p>
+              <button id="preview-slots" type="button">預覽目前填寫設定</button>
+              <p
+                id="slot-preview-label"
+                class="fineprint"
+                aria-live="polite"
+              ></p>
+              <div id="slot-preview" class="slot-preview"></div>
+            </section>
+            <section class="panel ordering-controls">
+              <h2>點餐入口</h2>
+              <p id="ordering-state" class="muted">尚未變更接單狀態</p>
+              <div class="button-row">
+                <button id="pause-ordering" type="button">暫停新單</button
+                ><button id="resume-ordering" class="primary" type="button">
+                  恢復接單
+                </button>
+              </div>
+              <p class="fineprint">暫停不影響已成立訂單及顧客查回原單。</p>
+            </section>
+          </aside>
+        </div>
+        </section>
+        <section class="admin-orders" id="orders-section" data-admin-page tabindex="-1" hidden>
+          <div class="section-heading">
+            <h2>顧客預約單</h2>
+            <button id="admin-refresh-orders" type="button">更新訂單</button>
+          </div>
+          <p class="muted">以取餐時間排序。操作前請確認實際製作與收款；歷史資料僅供查閱。</p>
+          <form id="order-filters" class="field-grid"><label>搜尋號碼、姓名或電話<input id="order-query" type="search" autocomplete="off" /></label><label>付款狀態<select id="order-payment"><option value="">全部</option><option value="UNPAID_ONSITE">到店未付款</option><option value="PAID_ONSITE">到店已付款</option><option value="PAID_ONLINE">線上已付款</option><option value="AWAITING_ONLINE_PAYMENT">等待線上付款</option><option value="PAYMENT_UNCERTAIN">付款待確認</option><option value="PAYMENT_FAILED">付款失敗</option><option value="UNKNOWN">待核對</option></select></label><label>製作狀態<select id="order-production"><option value="">全部</option><option value="WAITING_PAYMENT">等待付款</option><option value="QUEUED">待製作</option><option value="PREPARING">製作中</option><option value="READY_FOR_PICKUP">可取餐</option><option value="PICKED_UP">已取餐</option></select></label></form><p id="order-count" role="status"></p>
+          <div id="admin-orders" class="order-list"></div>
+        </section>
+        </div>
+      </div>
+      <footer>ManyFish · 店家後台</footer>
+    </main>
+    <script type="module" src="/admin.mjs"></script>
+  </body>
+</html>

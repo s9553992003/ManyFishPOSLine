@@ -1,0 +1,16 @@
+.DS_Store
+node_modules/
+.env
+.env.*
+!.env.example
+*.log
+*.pem
+*.key
+*.sqlite*
+*.db*
+*.tar
+*.tar.gz
+*.dump
+coverage/
+playwright-report/
+test-results/
